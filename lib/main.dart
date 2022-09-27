@@ -41,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final telephony = Telephony.instance;
   String _message = "";
+  List<SmsMessage> messages = [];
 
   @override
   void initState() {
@@ -73,7 +74,13 @@ class _MyHomePageState extends State<MyHomePage> {
     if (!mounted) return;
   }
 
-  void _incrementCounter() {
+  void _incrementCounter() async {
+    messages = await telephony.getInboxSms(
+        columns: [SmsColumn.ADDRESS, SmsColumn.BODY],
+        filter: SmsFilter.where(SmsColumn.ADDRESS).equals("266898"),
+        sortOrder: [
+          OrderBy(SmsColumn.DATE, sort: Sort.ASC),
+        ]);
     setState(() {
       _counter++;
     });
