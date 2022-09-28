@@ -51,7 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   onMessage(SmsMessage message) async {
-    debugger();
     setState(() {
       _message = message.body ?? "Error reading message body.";
     });
@@ -71,16 +70,22 @@ class _MyHomePageState extends State<MyHomePage> {
           onBackgroundMessage: backgrounMessageHandler);
     }
 
+    final messages1 = await telephony.getInboxSms(
+        // columns: [SmsColumn.ADDRESS, SmsColumn.BODY],
+        // filter: SmsFilter.where(SmsColumn.ADDRESS).equals("266898"),
+        // sortOrder: [
+        //   OrderBy(SmsColumn.DATE, sort: Sort.ASC),
+        // ],
+        );
+    debugPrint('number of messages ${messages1.length}');
+    setState(() {
+      messages = messages1;
+    });
+
     if (!mounted) return;
   }
 
-  void _incrementCounter() async {
-    messages = await telephony.getInboxSms(
-        columns: [SmsColumn.ADDRESS, SmsColumn.BODY],
-        filter: SmsFilter.where(SmsColumn.ADDRESS).equals("266898"),
-        sortOrder: [
-          OrderBy(SmsColumn.DATE, sort: Sort.ASC),
-        ]);
+  void _incrementCounter() {
     setState(() {
       _counter++;
     });
@@ -104,6 +109,14 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headline4,
             ),
             Text(_message),
+            Expanded(
+                child: ListView.builder(
+              itemCount: _counter,
+              prototypeItem: const ListTile(title: Text('uh oh')),
+              itemBuilder: (context, index) {
+                return ListTile(title: Text(messages[index].body ?? 'uh oh'));
+              },
+            )),
           ],
         ),
       ),
