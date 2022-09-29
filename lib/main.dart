@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:sms_finance/message_storage.dart';
 import 'package:telephony/telephony.dart';
 
 backgrounMessageHandler(SmsMessage message) async {
@@ -8,7 +9,10 @@ backgrounMessageHandler(SmsMessage message) async {
   debugPrint("onBackgroundMessage called ${message.body}");
 }
 
+MyDatabase? database;
+
 void main() {
+  database = MyDatabase();
   runApp(const MyApp());
 }
 
